@@ -7,7 +7,7 @@ try:
 except:
     pass
 
-from .. import logging
+from .. import logs
 import warnings
 from datetime import datetime
 import numpy as np
@@ -117,7 +117,7 @@ class RunConfig:
             message += f"\n\t - Distributed data send via {self.bufnum} buffer\n"
             message += f"\n\t - Current group carac:\n\t\t - size: {self.group_size}\n\t\t - rank: {self.group_rank}\n"
 
-        logging.getLogger(__name__).info(message)
+        logs.getLogger(__name__).info(message)
 
     def distrib(self, tab, N, div=False):
         """Distribution of tab of size N to all processor according to counter distribution's parametters and if or not a derivative is expected
@@ -173,4 +173,4 @@ class RunConfig:
         if self.rank == 0: os.mkdir(folder)
         self.barrier()
         filename = f"{folder}/{folder[4:]}_rank{self.rank}.log"
-        logging.setup(log_filename=filename, log_level=logging.INFO)
+        logs.setup(log_filename=filename, log_level=logs.INFO)

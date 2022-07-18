@@ -1,4 +1,4 @@
-from exact_laws import logging
+from exact_laws import logs
 from exact_laws.config import load_config
 from exact_laws import config
 import argparse
@@ -35,6 +35,6 @@ if __name__ == "__main__":
     # configure the saving process (always valid way)
     backup = Backup(config.restart_checkpoint.get(), run_config.time_deb, run_config.rank)
 
-    logging.getLogger(__name__).info(f"Run of {__file__} version {version}\n")
+    logs.getLogger(__name__).info(f"Run of {__file__} version {version}\n")
     calc_exact_laws_from_config(run_config=run_config, backup=backup)
-    logging.getLogger(__name__).info(f"Exit")
+    logs.getLogger(__name__).info(f"Exit")

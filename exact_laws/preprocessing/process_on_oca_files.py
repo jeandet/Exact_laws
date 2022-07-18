@@ -1,6 +1,6 @@
 import numpy as np
 import h5py as h5
-from .. import logging
+from .. import logs
 from .. import config
 from ..exact_laws_calc.laws import LAWS
 from ..exact_laws_calc.terms import TERMS
@@ -64,12 +64,12 @@ def from_OCA_files_to_standard_h5_file(
         f"\n\t - quantities: {quantities}"
         f"\n\t - reduction: {reduction}"
     )
-    logging.getLogger(__name__).info(message)
+    logs.getLogger(__name__).info(message)
 
     output_file = f"{output_folder}/{name}.h5"
 
     if process_on_standard_h5_file.verif_file_existence(output_file, "Process impossible."):
-        logging.getLogger(__name__).info(f"End process from_OCA_files_to_standard_h5_file()\n")
+        logs.getLogger(__name__).info(f"End process from_OCA_files_to_standard_h5_file()\n")
         return output_file
 
     g = h5.File(output_file, "w")
@@ -83,7 +83,7 @@ def from_OCA_files_to_standard_h5_file(
             dic_param = extract_simu_param_from_OCA_file(fv, dic_param, "3Dgrid")
         else:
             dic_param = extract_simu_param_from_OCA_file(fv, dic_param, "Simulation_Parameters")
-    logging.getLogger(__name__).info(f"... End extracting param")
+    logs.getLogger(__name__).info(f"... End extracting param")
 
     # velocity source file
     with h5.File(f"{input_folder}/3Dfields_v.h5", "r") as fv:
@@ -97,7 +97,7 @@ def from_OCA_files_to_standard_h5_file(
         if aq in needed_quantities:
             QUANTITIES[aq].create_datasets(g, dic_quant, dic_param)
     del (dic_quant["vx"], dic_quant["vy"], dic_quant["vz"])
-    logging.getLogger(__name__).info(f"... End computing quantities from _v.h5")
+    logs.getLogger(__name__).info(f"... End computing quantities from _v.h5")
 
     # Density source file
     with h5.File(f"{input_folder}/3Dfields_rho.h5", "r") as frho:
@@ -112,7 +112,7 @@ def from_OCA_files_to_standard_h5_file(
     for aq in accessible_quantities:
         if aq in needed_quantities:
             QUANTITIES[aq].create_datasets(g, dic_quant, dic_param)
-    logging.getLogger(__name__).info(f"... End computing quantities from _rho.h5")
+    logs.getLogger(__name__).info(f"... End computing quantities from _rho.h5")
 
     # Pressure source file
     with h5.File(f"{input_folder}/3Dfields_pi.h5", "r") as fp:
@@ -122,7 +122,7 @@ def from_OCA_files_to_standard_h5_file(
         if aq in needed_quantities:
             QUANTITIES[aq].create_datasets(g, dic_quant, dic_param)
     del (dic_quant["ppar"], dic_quant["pperp"])
-    logging.getLogger(__name__).info(f"... End computing quantities from _pi.h5")
+    logs.getLogger(__name__).info(f"... End computing quantities from _pi.h5")
 
     # Magnetic field source file
     with h5.File(f"{input_folder}/3Dfields_b.h5", "r") as fb:
@@ -136,7 +136,7 @@ def from_OCA_files_to_standard_h5_file(
         if aq in needed_quantities:
             QUANTITIES[aq].create_datasets(g, dic_quant, dic_param)
     del dic_quant
-    logging.getLogger(__name__).info(f"... End computing quantities from _b.h5")
+    logs.getLogger(__name__).info(f"... End computing quantities from _b.h5")
 
     # Param
     g.create_group("param")
@@ -155,7 +155,7 @@ def from_OCA_files_to_standard_h5_file(
         g["param"].create_dataset(key, data=physical_params[key])
 
     g.close()
-    logging.getLogger(__name__).info(f"End process from_OCA_files_to_standard_h5_file()\n")
+    logs.getLogger(__name__).info(f"End process from_OCA_files_to_standard_h5_file()\n")
 
     return output_file
 

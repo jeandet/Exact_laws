@@ -1,6 +1,6 @@
 import os
 import pickle as pkl
-from .. import logging
+from .. import logs
 
 
 class Backup():
@@ -15,16 +15,16 @@ class Backup():
             self.already = True
 
     def save(self, object, name, rank='', state=''):
-        logging.getLogger(__name__).info(f"Save {name} {state} in folder {self.folder} INIT")
+        logs.getLogger(__name__).info(f"Save {name} {state} in folder {self.folder} INIT")
         filename = f"{self.folder}/{name}_rk{rank}.pkl"
         with open(filename, "wb") as f:
             pkl.dump(object, f)
-        logging.getLogger(__name__).info(f"Save {name} END")
+        logs.getLogger(__name__).info(f"Save {name} END")
 
     def download(self, name, rank=''):
-        logging.getLogger(__name__).info(f"Download {name} from folder {self.folder} INIT")
+        logs.getLogger(__name__).info(f"Download {name} from folder {self.folder} INIT")
         filename = f"{self.folder}/{name}_rk{rank}.pkl"
         with open(filename, "rb") as f:
             output = pkl.load(f)
-        logging.getLogger(__name__).info(f"Download {name} END")
+        logs.getLogger(__name__).info(f"Download {name} END")
         return output

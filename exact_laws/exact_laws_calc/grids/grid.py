@@ -1,4 +1,4 @@
-from ... import logging
+from ... import logs
 
 class Grid:
     """Classe contenant les informations nécessaires sur une grille de données
@@ -22,4 +22,4 @@ class Grid:
         """Display the principal parameter of the grid object"""
         message = f"Check Grid object {name}:"
         message = self.describ()
-        logging.getLogger(__name__).info(message)
+        logs.getLogger(__name__).info(message)

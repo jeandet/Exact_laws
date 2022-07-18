@@ -1,4 +1,4 @@
-from .. import logging
+from .. import logs
 from .. import config
 import numpy as np
 
@@ -9,14 +9,14 @@ from .laws import LAWS
 
 
 def initialise_original_dataset(input_filename, run_config):
-    logging.getLogger(__name__).info("Initialisation original data INIT")
+    logs.getLogger(__name__).info("Initialisation original data INIT")
     original_dataset, laws, terms = load_from_standard_file(input_filename)
-    logging.getLogger(__name__).info("Initialisation original data END")
+    logs.getLogger(__name__).info("Initialisation original data END")
     return original_dataset, laws, terms
 
 
 def initialise_output_dataset(incremental_grid, original_dataset, laws, terms):
-    logging.getLogger(__name__).info(f"Initialisation output data INIT")
+    logs.getLogger(__name__).info(f"Initialisation output data INIT")
     params = {}
     params['laws'] = laws
     params['terms'], params['coeffs'] = list_terms_and_coeffs(laws, terms, original_dataset.params)
@@ -24,7 +24,7 @@ def initialise_output_dataset(incremental_grid, original_dataset, laws, terms):
     grid = grid_prim_and_sec(params['terms'], incremental_grid)
     quantities = init_ouput_quantities(grid.coords['listprim'], grid.coords['listsec'], params['terms'])
     output_dataset = load(quantities=quantities, grid=grid, params=params)
-    logging.getLogger(__name__).info(f"Initialisation output data END")
+    logs.getLogger(__name__).info(f"Initialisation output data END")
     return output_dataset
 
 
@@ -69,7 +69,7 @@ def calc_terms(dataset, output_dataset, run_config, save, backup_setp=10):
     output_quantities = output_dataset.quantities
     saved_list = output_dataset.params['state']['list']
 
-    logging.getLogger(__name__).info("INIT Calculation of the correlation functions")
+    logs.getLogger(__name__).info("INIT Calculation of the correlation functions")
     Ndat = dataset.grid.N
 
     if saved_list == 'prim':
@@ -82,7 +82,7 @@ def calc_terms(dataset, output_dataset, run_config, save, backup_setp=10):
                                                                                    **dataset.quantities)
             if (index % (run_config.size * backup_setp)) == 0:
                 run_config.barrier()  # TODO check this
-                logging.getLogger(__name__).info(f'... End {index} of listprim')
+                logs.getLogger(__name__).info(f'... End {index} of listprim')
                 output_dataset.params['state']['index'] = index + 1
                 save(output_dataset, 'data_output', rank=f"{run_config.rank}")
 
@@ -100,22 +100,22 @@ def calc_terms(dataset, output_dataset, run_config, save, backup_setp=10):
                                                                                    **dataset.quantities)
             if (index % (run_config.size * backup_setp)) == 0:
                 run_config.barrier()  # TODO check this
-                logging.getLogger(__name__).info(f'... End {index} of listsec')
+                logs.getLogger(__name__).info(f'... End {index} of listsec')
                 output_dataset.params['state']['index'] = index + 1
                 output_dataset.params['state']['list'] = 'sec'
                 save(output_dataset, 'data_output', rank=f"{run_config.rank}")
 
     run_config.barrier()
     del (output_dataset.params['state'])
-    logging.getLogger(__name__).info("END Calculation of a correlation functions")
+    logs.getLogger(__name__).info("END Calculation of a correlation functions")
 
 
 def reduction_output(quantities, run_config):
-    logging.getLogger(__name__).info(f"Reduction output data INIT")
+    logs.getLogger(__name__).info(f"Reduction output data INIT")
     output = {}
     for k in quantities.keys():
         output[k] = run_config.reduce(quantities[k])
-    logging.getLogger(__name__).info(f"Reduction output data END")
+    logs.getLogger(__name__).info(f"Reduction output data END")
     return output
 
 

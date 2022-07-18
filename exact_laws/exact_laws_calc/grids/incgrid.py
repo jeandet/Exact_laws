@@ -1,4 +1,4 @@
-from ... import logging
+from ... import logs
 
 from ...mathematical_tools.derivation import cdiff
 
@@ -24,6 +24,6 @@ class IncGrid():
     def check(self, name=''):
         """Display the principal parameter of the grid object"""
         message = self.describ()
-        logging.getLogger(__name__).info(message)
+        logs.getLogger(__name__).info(message)
 
 
